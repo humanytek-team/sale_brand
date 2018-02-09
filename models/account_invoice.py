@@ -31,8 +31,9 @@ class AccountInvoice(models.Model):
 
     brand = fields.Char('Brand',
                             compute='_compute_brand_id',
-                            search='_search_brand',
-                            readonly=True)
+                            #search='_search_brand',
+                            readonly=True,
+                            store=True)
 
     @api.one
     def _compute_brand_id(self):
@@ -40,19 +41,19 @@ class AccountInvoice(models.Model):
             if self.invoice_line_ids[0].product_id.product_brand_id:
                 self.brand = self.invoice_line_ids[0].product_id.product_brand_id.name
 
-    @api.multi
-    def _search_brand(self, operator, value):
-        AccountInvoice = self.env['account.invoice']
-        invoices = AccountInvoice.search([])
-        list_ids = []
-        for invoice in invoices:
-            if invoice.invoice_line_ids:
-                if invoice.invoice_line_ids[0].product_id.product_brand_id:
-                    brand = invoice.invoice_line_ids[0].product_id.product_brand_id.name
-                    if operator == '=':
-                        if brand == value:
-                            list_ids.append(invoice.id)
-                    elif operator == '!=':
-                        if brand != value:
-                            list_ids.append(invoice.id)
-        return [('id', 'in', list_ids)]
+    #@api.multi
+    #def _search_brand(self, operator, value):
+        #AccountInvoice = self.env['account.invoice']
+        #invoices = AccountInvoice.search([])
+        #list_ids = []
+        #for invoice in invoices:
+            #if invoice.invoice_line_ids:
+                #if invoice.invoice_line_ids[0].product_id.product_brand_id:
+                    #brand = invoice.invoice_line_ids[0].product_id.product_brand_id.name
+                    #if operator == '=':
+                        #if brand == value:
+                            #list_ids.append(invoice.id)
+                    #elif operator == '!=':
+                        #if brand != value:
+                            #list_ids.append(invoice.id)
+        #return [('id', 'in', list_ids)]
