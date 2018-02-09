@@ -30,10 +30,29 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     brand = fields.Char('Brand',
-                            compute='_compute_brand_id', readonly=True)
+                            compute='_compute_brand_id',
+                            search='_search_brand',
+                            readonly=True)
 
     @api.one
     def _compute_brand_id(self):
         if self.order_line:
             if self.order_line[0].product_id.product_brand_id:
                 self.brand = self.order_line[0].product_id.product_brand_id.name
+
+    @api.multi
+    def _search_brand(self, operator, value):
+        SaleOrder = self.env['sale.order']
+        orders = SaleOrder.search([])
+        list_ids = []
+        for order in orders:
+            if order.order_line:
+                if order.order_line[0].product_id.product_brand_id:
+                    brand = order.order_line[0].product_id.product_brand_id.name
+                    if operator == '=':
+                        if brand == value:
+                            list_ids.append(order.id)
+                    elif operator == '!=':
+                        if brand != value:
+                            list_ids.append(order.id)
+        return [('id', 'in', list_ids)]
