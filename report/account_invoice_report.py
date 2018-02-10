@@ -34,7 +34,7 @@ class AccountInvoiceReport(models.Model):
         if self.account_id:
             AccountInvoice = self.env['account.invoice']
             invoices = AccountInvoice.search([
-                                    ('account_id', '=', self.account_id),])
+                                    ('account_id', '=', self.account_id.id),])
             if invoices:
                 if invoices[0].invoice_line_ids:
                     if invoices[0].invoice_line_ids[0].product_id:
@@ -66,7 +66,7 @@ class AccountInvoiceReport(models.Model):
         return [('id', 'in', list_ids)]
 
     brand = fields.Char(string="Brand", compute='_compute_brand',
-                            search='_search_brand',
+                            #search='_search_brand',
                             readonly=True,
-                            #store=True
+                            store=True
                             )
