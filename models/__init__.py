@@ -20,5 +20,5 @@
 #
 ###############################################################################
 
-import sale
-import account_invoice
+from . import sale
+from . import account_invoice
